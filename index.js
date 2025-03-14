@@ -16,25 +16,27 @@ conectarDB();
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: ({req}) => {
-        // console.log(req.headers['authorization']);
-
-            // console.log(req.headers)
-
-
+    context: ({ req }) => {
         const token = req.headers['authorization'] || '';
-        if(token) {
-            try {
-                const usuario = jwt.verify(token.replace('Bearer ', ''), process.env.SECRETA);
-                console.log(usuario);
-                return { 
-                    usuario 
-                }
-            } catch(error) {
-                if(error.message === "jwt expired" ) {
-                    throw new Error('Debe iniciar sesión...')
-            }
-        }}
+        console.log("Token recibido:", token); // 👈 Verificar en logs
+        
+        if (!token) {
+            console.log("No se envió token");
+            return {}; // Devuelve un contexto vacío en lugar de lanzar error
+        }
+    
+        try {
+            const usuario = jwt.verify(token.replace('Bearer ', ''), process.env.SECRETA);
+            console.log("Usuario autenticado:", usuario);
+            return { usuario };
+        } catch (error) {
+            console.error("Error al verificar token:", error.message);
+            return {}; // No lanzar error, solo devolver un contexto vacío
+        }
+    },
+    cors: {
+        origin: ['https://crm-client-weld.vercel.app/', 'http://localhost:3000'], // Cambia por tu dominio
+        credentials: true
     }
 });
 
