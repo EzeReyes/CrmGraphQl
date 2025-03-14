@@ -35,7 +35,7 @@ const server = new ApolloServer({
         }
     },
     cors: {
-        origin: ['https://crm-client-weld.vercel.app/', 'http://localhost:3000'], // Cambia por tu dominio
+        origin: ['https://crm-client-weld.vercel.app/login', 'http://localhost:3000'], // Cambia por tu dominio
         credentials: true
     }
 });
